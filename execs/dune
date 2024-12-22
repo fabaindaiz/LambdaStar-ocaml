@@ -1,0 +1,3 @@
+(executables
+ (names run_parse)
+ (libraries dev alcotest containers))

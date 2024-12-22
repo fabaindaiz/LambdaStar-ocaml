@@ -1,0 +1,2 @@
+(let (fconst (lam low (b (Bool high)) (false low) low))
+    b)
