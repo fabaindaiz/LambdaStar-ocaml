@@ -2,6 +2,7 @@
 open Common.Type
 open Surface.Ast
 open Core.Ast
+open Core.Erase
 open Core.Typecheck
 open Core.Value
 open Compile
@@ -55,8 +56,8 @@ let rec interp_casted (u : core) (env : env) : value =
       let env' = (x, v) :: env in
       let w = interp_casted n env' in
       value_with_conc_sec w l
-    | VCast (v, c) ->
-      let w = interp_casted m env in
+    | VCast (_, _) ->
+      let _ = interp_casted m env in
       (* elim-fun-proxy *)
       failwith "Not implemented"
     | _ -> raise_type_error "Lambda" (interp_casted l env))
@@ -64,11 +65,11 @@ let rec interp_casted (u : core) (env : env) : value =
     (match interp_casted l env with
     | Const (True, l) -> value_with_conc_sec (interp_casted m env) l
     | Const (False, l) -> value_with_conc_sec (interp_casted n env) l
-    | VCast (Const (True, l), c) ->
-      let v = interp_casted m env in (* check this *)
+    | VCast (Const (True, _), _) ->
+      let _ = interp_casted m env in (* check this *)
       failwith "Not implemented"
-    | VCast (Const (False, l), c) ->
-      let v = interp_casted n env in (* check this *)
+    | VCast (Const (False, _), _) ->
+      let _ = interp_casted n env in (* check this *)
       failwith "Not implemented"
     | _ -> raise_type_error "Bool" (interp_casted l env))
   | Let (x, m, n) ->

@@ -1,4 +1,4 @@
 (library
  (name core)
- (modules ast typecheck value)
+ (modules ast typecheck erase value)
  (libraries common))
