@@ -1,5 +1,5 @@
-open Dev.Ast
-open Dev.Parse
+open Parsing.Parse
+open Surface.Ast
 open Printf
 
 let () =

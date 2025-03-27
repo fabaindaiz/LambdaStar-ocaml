@@ -1,7 +1,7 @@
-open Dev.Ast
-open Dev.Parse
-open Dev.Compile
-open Dev.Interp
+open Parsing.Parse
+open Driver.Compile
+open Driver.Interp
+open Core.Value
 open Printf
 
 let () =

@@ -1,7 +1,8 @@
-open Ast
-open Surface
-open Lattice
-open Subtyping
+open Common.Lattice
+open Common.Type
+open Core.Ast
+open Surface.Ast
+open Surface.Typecheck
 
 exception CompileError of string
 
@@ -17,7 +18,7 @@ let rec surf_to_core (m : 'a tsurf) : core =
     let b' = merge b c in
     let c1 = Cast (a, a', p) in
     let c2 = Cast (b, b', p) in
-    If (surf_to_core l, c, TCast (surf_to_core m, c1), TCast (surf_to_core n, c2))
+    If (surf_to_core l, c, ECast (surf_to_core m, c1), ECast (surf_to_core n, c2))
   | _ -> failwith "Compile unimplemented"
 
 let compile_core (m : surf) : core =

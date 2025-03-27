@@ -1,4 +1,6 @@
-open Ast
+open Type
+
+exception MergeError of string
 
 let conc_sec_subtyping (c1 : conc_sec) (c2 : conc_sec) : bool =
   match c1, c2 with
@@ -30,8 +32,8 @@ and subtyping (t1 : ttype) (t2 : ttype) : bool =
 
 let grad_sec_consistency (g1 : grad_sec) (g2 : grad_sec) : bool =
   match g1, g2 with
-  | TStar, _ -> true
   | _, TStar -> true
+  | TStar, _ -> true
   | TConc c1, TConc c2 -> c1 = c2
 
 let rec raw_consistency (t1 : raw_type) (t2 : raw_type) : bool =
@@ -52,8 +54,8 @@ and consistency (t1 : ttype) (t2 : ttype) : bool =
 
 let grad_sec_consistent_subtyping (g1 : grad_sec) (g2 : grad_sec) : bool =
   match g1, g2 with
-  | TStar, _ -> true
   | _, TStar -> true
+  | TStar, _ -> true
   | TConc _, TConc _ ->
     grad_sec_subtyping g1 g2
 

@@ -1,6 +1,6 @@
-open Dev.Ast
-open Dev.Parse
-open Dev.Compile
+open Parsing.Parse
+open Driver.Compile
+open Core.Ast
 open Printf
 
 let () =

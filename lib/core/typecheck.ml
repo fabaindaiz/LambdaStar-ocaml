@@ -1,22 +1,7 @@
+open Common.Env
+open Common.Type
+open Common.Lattice
 open Ast
-open Lattice
-
-exception TypeError of string
-
-type typeEnv = (string * ttype) list
-
-let get_type (x : string) (env : typeEnv) : ttype =
-  try List.assoc x env
-  with Not_found -> failwith ("Variable " ^ x ^ " not found")
-
-let check (f : 'a -> 'a -> bool) (a : 'a) (b : 'a) : unit =
-  if f a b then () else failwith "Type mismatch"
-
-
-let constant_typing (k : const) : base_type =
-  match k with
-  | Unit -> TUnit
-  | True | False -> TBool
 
 let rec core_typing (m : core) (env : typeEnv) (gc : grad_sec) : ttype =
   match m with
@@ -40,5 +25,5 @@ let rec core_erase (u: core) : core =
     | TLow -> Const (k, TLow)
     | THigh -> Opaque)
   | If (l, a, m, n) -> If (core_erase l, a, core_erase m, core_erase n)
-  | TCast (m, _) -> core_erase m
+  | ECast (m, _) -> core_erase m
   | _ -> Opaque
