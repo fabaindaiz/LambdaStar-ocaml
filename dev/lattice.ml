@@ -61,7 +61,7 @@ and consistent_join (t1 : ttype) (t2 : ttype) : ttype =
   | Type (t1, g1), Type (t2, g2) ->
     Type (raw_consistent_join t1 t2, grad_sec_consistent_join g1 g2)
 
-let consistent_join_only_grad_sec (t1 : ttype) (g2 : grad_sec) : ttype =
+let consistent_join_with_grad_sec (t1 : ttype) (g2 : grad_sec) : ttype =
   match t1 with
   | Type (t1, g1) -> Type (t1, grad_sec_gradual_meet g1 g2)
 

@@ -29,7 +29,7 @@ let rec surface_typing (m : surf) (env : typeEnv) (gc : grad_sec) : ttype =
       let a = surface_typing m env g' in
       let b = surface_typing n env g' in
       let c = consistent_join a b in
-      consistent_join_only_grad_sec c g
+      consistent_join_with_grad_sec c g
     | _ -> raise (TypeError "If type mismatch"))
   | _ -> failwith "Surface unimplemented"
 

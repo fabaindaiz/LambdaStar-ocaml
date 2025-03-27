@@ -1,6 +1,8 @@
 (** Interpreter **)
 open Ast
+open Core
 open Parse
+open Lattice
 open Printf
 
 exception RTError of string
@@ -11,6 +13,12 @@ type value =
   | Const of const * conc_sec
   | VCast of value * cast
   | Opaque
+
+let value_with_conc_sec (v : value) (l' : conc_sec) : value =
+  match v with
+  | Const (k, l) -> Const (k, conc_sec_join l l')
+  | VCast (v, c) -> VCast (v, c)
+  | Opaque -> Opaque
 
 (* Pretty printing *)
 let rec string_of_val (v : value) : string =
@@ -39,31 +47,33 @@ let lookup_env : string -> env -> value =
     | Some v -> v
     | None -> raise (CTError (sprintf "Unbound identifier: %s" s))
 
-let rec core_erase (u: core) : core =
-  match u with
-  | Var x -> Var x
-  | Const (k, l) ->
-    (match l with
-    | TLow -> Const (k, TLow)
-    | THigh -> Opaque)
-  | If (l, a, m, n) -> If (core_erase l, a, core_erase m, core_erase n)
-  | TCast (m, _) -> core_erase m
-  | Opaque -> Opaque
-
-(* Type checks *)
 
 (* interpreter *)
-let rec interp_erased (u : core) (env) : value =
+let interp_erased (u : core) (env : env) : value =
+  let rec interp_erased_aux (u : core) (env) : value =
+    match u with
+    | Var x -> lookup_env x env
+    | Const (k, l) -> Const (k, l)
+    | If (l, _, m, n) ->
+      (match l with
+      | Const (True, TLow) -> interp_erased_aux m env
+      | Const (False, TLow) -> interp_erased_aux n env
+      | Opaque -> Opaque
+      | _ -> raise_type_error "Bool" (interp_erased_aux l env))
+    | _ -> raise (RTError (sprintf "Interp unimplemented: %s" (string_of_core u))) in
+  interp_erased_aux (core_erase u) env
+
+let rec interp_casted (u : core) (env : env) : value =
   match u with
   | Var x -> lookup_env x env
   | Const (k, l) -> Const (k, l)
   | If (l, _, m, n) ->
     (match l with
-    | Const (True, TLow) -> interp_erased m env
-    | Const (False, TLow) -> interp_erased n env
-    | Opaque -> Opaque
-    | _ -> raise_type_error "Bool" (interp_erased l env))
+    | Const (k, l) ->
+      (match k with
+      | True -> value_with_conc_sec (interp_casted m env) l
+      | False -> value_with_conc_sec (interp_casted n env) l
+      | _ -> raise_type_error "Bool" (Const (k, l)))
+    | _ -> raise_type_error "Bool" (interp_casted l env))
+  | TCast (m, c) -> interp_casted m env (* complete this case *)
   | _ -> raise (RTError (sprintf "Interp unimplemented: %s" (string_of_core u)))
-
-let interp (u: core) : value =
-  interp_erased (core_erase u) empty_env
