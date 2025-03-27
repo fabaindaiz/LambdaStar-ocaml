@@ -1,7 +1,7 @@
 open Common.Env
 open Common.Type
-open Common.Lattice
 open Common.Subtyping
+open Common.Lattice
 open Ast
 
 let rec surface_typing (m : surf) (env : typeEnv) (gc : grad_sec) : ttype =
@@ -42,27 +42,26 @@ let rec surface_typing (m : surf) (env : typeEnv) (gc : grad_sec) : ttype =
 
 let rec surface_typed (m : surf) (env : typeEnv) (gc : grad_sec) : 'a tsurf =
   match m with
-  | Var x -> Var (x, surface_typing m env gc)
-  | Const (k, l) -> Const (k, l, surface_typing m env gc)
+  | Var x -> Var (x, (surface_typing m env gc, gc))
+  | Const (k, l) -> Const (k, l, (surface_typing m env gc, gc))
   | Abs (pc, x, a, n, l) ->
     let env' = (x, a) :: env in
     let b = surface_typing n env' (TConc pc) in
-    Abs (pc, x, a, surface_typed n env' (TConc pc), l, Type (TArrow (a, b, TConc pc), TConc l))
+    Abs (pc, x, a, surface_typed n env' (TConc pc), l, (Type (TArrow (a, b, TConc pc), TConc l), TConc l))
   | App (l, m, p) ->
     (match surface_typing l env gc with
     | Type (TArrow (_, b, _), g) ->
-      App (surface_typed l env gc, surface_typed m env gc, p, consistent_join_with_grad_sec b g)
+      App (surface_typed l env gc, surface_typed m env gc, p, (consistent_join_with_grad_sec b g, consisten_join_only_grad_sec b g))
     | _ -> raise (TypeError "Application type mismatch"))
   | If (l, m, n, p) ->
     (match surface_typing l env gc with
     | Type (TBase TBool, g) ->
       let g' = grad_sec_consistent_join gc g in
-      If (surface_typed l env gc, surface_typed m env g', surface_typed n env g', p, surface_typing m env gc)
+      If (surface_typed l env gc, surface_typed m env g', surface_typed n env g', p, (surface_typing m env gc, gc))
     | _ -> raise (TypeError "If type mismatch"))
   | Let (x, m, n) ->
     let a = surface_typing m env gc in
     let env' = (x, a) :: env in
-    Let (x, surface_typed m env gc, surface_typed n env' gc, surface_typing n env' gc)
+    Let (x, surface_typed m env gc, surface_typed n env' gc, (surface_typing n env' gc, gc))
   | Annot (m, a, p) ->
-    Annot (surface_typed m env gc, a, p, a)
-  | _ -> failwith "Surface unimplemented"
+    Annot (surface_typed m env gc, a, p, (a, gc))
