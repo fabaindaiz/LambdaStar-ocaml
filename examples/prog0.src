@@ -1,2 +1,1 @@
-(let (fconst (lam low (b (Bool high)) (false low) low))
-    b)
+(if (true low) (false low) (true low) blame)

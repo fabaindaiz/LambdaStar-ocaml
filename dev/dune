@@ -1,4 +1,4 @@
 (library
  (name dev)
- (modules ast lattice subtyping surface parse util)
+ (modules ast lattice subtyping core surface compile parse interp util)
  (libraries containers))

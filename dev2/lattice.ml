@@ -18,8 +18,8 @@ let conc_sec_meet (c1 : conc_sec) (c2 : conc_sec) : conc_sec =
 
 let grad_sec_gradual_meet (g1 : grad_sec) (g2 : grad_sec) : grad_sec =
   match g1, g2 with
-  | _, TStar -> TStar
   | TStar, _ -> TStar
+  | _, TStar -> TStar
   | g1, g2 when g1 = g2 -> g1
   | _ -> raise (MeetError "No meet")
 
@@ -38,14 +38,14 @@ and gradual_meet (t1 : ttype) (t2 : ttype) : ttype =
 
 let grad_sec_consistent_join (g1 : grad_sec) (g2 : grad_sec) : grad_sec =
   match g1, g2 with
-  | _, TStar -> TStar
   | TStar, _ -> TStar
+  | _, TStar -> TStar
   | TConc c1, TConc c2 -> TConc (conc_sec_join c1 c2)
 
 let grad_sec_consistent_meet (g1 : grad_sec) (g2 : grad_sec) : grad_sec =
   match g1, g2 with
-  | _, TStar -> TStar
   | TStar, _ -> TStar
+  | _, TStar -> TStar
   | TConc c1, TConc c2 -> TConc (conc_sec_meet c1 c2)
 
 
@@ -60,10 +60,6 @@ and consistent_join (t1 : ttype) (t2 : ttype) : ttype =
   match t1, t2 with
   | Type (t1, g1), Type (t2, g2) ->
     Type (raw_consistent_join t1 t2, grad_sec_consistent_join g1 g2)
-
-let consistent_join_only_grad_sec (t1 : ttype) (g2 : grad_sec) : ttype =
-  match t1 with
-  | Type (t1, g1) -> Type (t1, grad_sec_gradual_meet g1 g2)
 
 
 let rec raw_consistent_meet (t1 : raw_type) (t2 : raw_type) : raw_type =

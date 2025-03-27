@@ -18,6 +18,9 @@ etest:
 parse:
 	dune exec execs/run_parse.exe $(src)
 
+compile:
+	dune exec execs/run_compile.exe $(src)
+
 interp: 
 	dune exec execs/run_interp.exe $(src)
 

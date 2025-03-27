@@ -1,7 +1,5 @@
 open Ast
 
-exception MergeError of string
-
 let conc_sec_subtyping (c1 : conc_sec) (c2 : conc_sec) : bool =
   match c1, c2 with
   | TLow, THigh -> true
@@ -32,8 +30,8 @@ and subtyping (t1 : ttype) (t2 : ttype) : bool =
 
 let grad_sec_consistency (g1 : grad_sec) (g2 : grad_sec) : bool =
   match g1, g2 with
-  | _, TStar -> true
   | TStar, _ -> true
+  | _, TStar -> true
   | TConc c1, TConc c2 -> c1 = c2
 
 let rec raw_consistency (t1 : raw_type) (t2 : raw_type) : bool =
@@ -54,8 +52,8 @@ and consistency (t1 : ttype) (t2 : ttype) : bool =
 
 let grad_sec_consistent_subtyping (g1 : grad_sec) (g2 : grad_sec) : bool =
   match g1, g2 with
-  | _, TStar -> true
   | TStar, _ -> true
+  | _, TStar -> true
   | TConc _, TConc _ ->
     grad_sec_subtyping g1 g2
 
@@ -73,22 +71,3 @@ and consistent_subtyping (t1 : ttype) (t2 : ttype) : bool =
   | Type (t1, g1), Type (t2, g2) ->
     grad_sec_consistent_subtyping g1 g2 &&
     raw_consistent_subtyping t1 t2
-
-
-let grad_sec_merge (g1 : grad_sec) (g2 : grad_sec) : grad_sec =
-  match g1, g2 with
-  | _, TStar -> TStar
-  | TStar, _ -> g2
-  | TConc _, TConc _ -> g1
-
-let rec raw_merge (t1 : raw_type) (t2 : raw_type) : raw_type =
-  match t1, t2 with
-  | TBase b1, TBase b2 -> if b1 = b2 then t1 else raise (MergeError "No merge")
-  | TArrow (t1a, t1b, gc1), TArrow (t2a, t2b, gc2) ->
-    TArrow (merge t2a t1a, merge t1b t2b, grad_sec_merge gc2 gc1)
-  | _ -> raise (MergeError "No merge")
-
-and merge (t1 : ttype) (t2 : ttype) : ttype =
-  match t1, t2 with
-  | Type (t1, g1), Type (t2, g2) ->
-    Type (raw_merge t1 t2, grad_sec_merge g1 g2)
