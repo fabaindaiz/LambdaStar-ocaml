@@ -25,6 +25,7 @@ type 'a tsurf =
   | Var of string * 'a
   | Const of const * conc_sec * 'a
   | Abs of conc_sec * string * ttype * 'a tsurf * conc_sec * 'a
+  | App of 'a tsurf * 'a tsurf * blame * 'a
   | If of 'a tsurf * 'a tsurf * 'a tsurf * blame * 'a
   | Let of string * 'a tsurf * 'a tsurf * 'a
   | Annot of 'a tsurf * ttype * blame * 'a
@@ -34,6 +35,7 @@ let tsurf_type (m : 'a tsurf) : 'a =
   | Var (_, t) -> t
   | Const (_, _, t) -> t
   | Abs (_, _, _, _, _, t) -> t
+  | App (_, _, _, t) -> t
   | If (_, _, _, _, t) -> t
   | Let (_, _, _, t) -> t
   | Annot (_, _, _, t) -> t

@@ -44,7 +44,11 @@ let rec parse_surface (sexp : sexp) : surf =
   match sexp with
   | `Atom s -> Var (s)
   | `List [k; l] -> Const (parse_const k, parse_conc_sec l)
+  | `List [`Atom "lam"; pc; `List [`Atom x; a]; n; l] -> Abs (parse_conc_sec pc, x, parse_ttype a, parse_surface n, parse_conc_sec l)
   | `List [`Atom "if"; l; m; n; `Atom p] -> If (parse_surface l, parse_surface m, parse_surface n, Blame p)
+  | `List [`Atom "let"; `List [`Atom x; m]; n] -> Let (x, parse_surface m, parse_surface n)
+  | `List [`Atom "ann"; m; a; `Atom p] -> Annot (parse_surface m, parse_ttype a, Blame p)
+  | `List [l; m; `Atom p] -> App (parse_surface l, parse_surface m, Blame p)
   | _ -> raise (ParseError (sprintf "Not a valid term: %s" (to_string sexp)))
 
 and parse_id (sexp : sexp) : string =
