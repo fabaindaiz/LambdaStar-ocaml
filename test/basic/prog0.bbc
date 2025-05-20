@@ -1,0 +1,8 @@
+NAME: prog0
+DESCRIPTION: basic test 0
+
+SRC:
+(if (true high) (false low) (true low) blame)
+
+EXPECTED:
+false high

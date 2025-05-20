@@ -7,13 +7,13 @@ init:
 	dune build @check
 
 test:
-	dune exec execs/run_test.exe -- test '$(F)'
+	dune exec test/run_test.exe -- test '$(F)'
 
 ctest:
-	dune exec execs/run_test.exe -- test '$(F)' -c
+	dune exec test/run_test.exe -- test '$(F)' -c
 
 etest:
-	dune exec execs/run_test.exe -- test '$(F)' -ce
+	dune exec test/run_test.exe -- test '$(F)' -ce
 
 parse:
 	dune exec execs/run_parse.exe $(src)
