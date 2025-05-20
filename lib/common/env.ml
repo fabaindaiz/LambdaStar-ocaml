@@ -1,12 +1,14 @@
-open Type
+open Printf
 
-exception TypeError of string
+(* Lexical Environment *)
+type 'a env = (string * 'a) list
+let empty_env : 'a env = []
 
-type typeEnv = (string * ttype) list
+let extend_env (names : string list) (vals : 'a list) (env : 'a env) : 'a env =
+  let param_vals = List.combine names vals in
+  List.fold_left (fun env p -> p :: env) env param_vals
 
-let get_type (x : string) (env : typeEnv) : ttype =
-  try List.assoc x env
-  with Not_found -> failwith ("Variable " ^ x ^ " not found")
-
-let check (f : 'a -> 'a -> bool) (a : 'a) (b : 'a) : unit =
-  if f a b then () else failwith "Type mismatch"
+let lookup_env (x : string) (env : 'a env) : 'a =
+    match List.assoc_opt x env with
+    | Some v -> v
+    | None -> failwith (sprintf "Unbound identifier: %s" x)

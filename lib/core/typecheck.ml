@@ -4,9 +4,9 @@ open Common.Subtyping
 open Common.Lattice
 open Ast
 
-let rec core_typing (m : core) (env : typeEnv) (gc : grad_sec) : ttype =
+let rec core_typing (m : core) (env : tenv) (gc : grad_sec) : ttype =
   match m with
-  | Var x -> get_type x env
+  | Var x -> lookup_env x env
   | Const (k, l) -> Type (TBase (constant_typing k), TConc l)
   | Abs (pc, x, a, n, l) ->
     let env' = (x, a) :: env in

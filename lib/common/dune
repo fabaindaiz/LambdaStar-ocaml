@@ -1,4 +1,4 @@
 (library
  (name common)
- (modules type lattice subtyping env util)
+ (modules env type lattice subtyping util)
  (libraries containers))

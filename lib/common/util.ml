@@ -6,6 +6,5 @@ let gensym =
     counter := !counter + 1;
     sprintf "%s_%d" basename !counter);;
 
-
 let enumerate (l : 'a list) : (int * 'a) list =
   List.mapi (fun i x -> (i, x)) l

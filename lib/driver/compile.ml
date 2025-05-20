@@ -1,4 +1,3 @@
-open Common.Env
 open Common.Type
 open Common.Lattice
 open Surface.Ast
@@ -41,7 +40,7 @@ let rec surf_to_core (m : 'a tsurf) : core =
     ECast (surf_to_core m, Cast (a', b, p))
 
 
-let compile_core (m : surf) (env : typeEnv) (gc : grad_sec) : core =
+let compile_core (m : surf) (env : tenv) (gc : grad_sec) : core =
   let _ = surface_typing m env gc in
   let m' = surface_typed m env gc in
   surf_to_core m'

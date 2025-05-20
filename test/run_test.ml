@@ -1,8 +1,9 @@
+open Common.Env
 open Parsing.Parse
+open Driver.Interp
+open Surface.Ast
 open Core.Ast
 open Core.Value
-open Surface.Ast
-open Driver.Interp
 open Alcotest
 open Bbctester.Type
 open Bbctester.Main

@@ -1,7 +1,5 @@
 open Type
 
-exception MergeError of string
-
 let conc_sec_subtyping (c1 : conc_sec) (c2 : conc_sec) : bool =
   match c1, c2 with
   | TLow, THigh -> true

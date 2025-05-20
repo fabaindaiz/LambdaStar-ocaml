@@ -4,9 +4,9 @@ open Common.Subtyping
 open Common.Lattice
 open Ast
 
-let rec surface_typing (m : surf) (env : typeEnv) (gc : grad_sec) : ttype =
+let rec surface_typing (m : surf) (env : tenv) (gc : grad_sec) : ttype =
   match m with
-  | Var x -> get_type x env
+  | Var x -> lookup_env x env
   | Const (k, l) -> Type (TBase (constant_typing k), TConc l)
   | Abs (pc, x, a, n, l) ->
     let env' = (x, a) :: env in
@@ -40,7 +40,7 @@ let rec surface_typing (m : surf) (env : typeEnv) (gc : grad_sec) : ttype =
     a
 
 
-let rec surface_typed (m : surf) (env : typeEnv) (gc : grad_sec) : 'a tsurf =
+let rec surface_typed (m : surf) (env : tenv) (gc : grad_sec) : 'a tsurf =
   match m with
   | Var x -> Var (x, (surface_typing m env gc, gc))
   | Const (k, l) -> Const (k, l, (surface_typing m env gc, gc))

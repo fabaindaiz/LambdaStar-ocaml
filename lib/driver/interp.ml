@@ -1,4 +1,5 @@
 (** Interpreter **)
+open Common.Env
 open Common.Type
 open Surface.Ast
 open Core.Ast
@@ -16,7 +17,7 @@ let raise_type_error (expected_type_s : string) (ill_value : value) : 'a =
 
 
 (* interpreter *)
-let interp_erased (u : core) (env : env) : value =
+let interp_erased (u : core) (env : venv) : value =
   let rec interp_erased_aux (u : core) (env) : value =
     match u with
     | Var x -> lookup_env x env
@@ -44,7 +45,7 @@ let interp_erased (u : core) (env : env) : value =
     | _ -> raise (InterpError (sprintf "Interp unimplemented: %s" (string_of_core u))) in
   interp_erased_aux (core_erase u) env
 
-let rec interp_casted (u : core) (env : env) : value =
+let rec interp_casted (u : core) (env : venv) : value =
   match u with
   | Var x -> lookup_env x env
   | Const (k, l) -> Const (k, l)
@@ -83,7 +84,7 @@ let rec interp_casted (u : core) (env : env) : value =
   | _ -> raise (InterpError (sprintf "Interp unimplemented: %s" (string_of_core u)))
 
 
-let interp (m : surf) (env : env) =
+let interp (m : surf) (env : venv) =
   let u = compile_core m [] (TConc TLow) in
   let _ = core_typing u [] (TConc TLow) in
   interp_casted u env

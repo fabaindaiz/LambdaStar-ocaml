@@ -1,3 +1,4 @@
+open Common.Env
 open Parsing.Parse
 open Driver.Interp
 open Core.Value

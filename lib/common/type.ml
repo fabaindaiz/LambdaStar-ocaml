@@ -1,4 +1,7 @@
 open Printf
+open Env
+
+exception TypeError of string
 
 type conc_sec =
   | TLow
@@ -67,3 +70,9 @@ let constant_typing (k : const) : base_type =
   match k with
   | Unit -> TUnit
   | True | False -> TBool
+
+
+type tenv = ttype env
+
+let check (f : 'a -> 'a -> bool) (a : 'a) (b : 'a) : unit =
+  if f a b then () else raise (TypeError "Type mismatch")
