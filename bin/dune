@@ -1,0 +1,4 @@
+(executable
+ (public_name lambda_star)
+ (name main)
+ (libraries common parsing driver containers))

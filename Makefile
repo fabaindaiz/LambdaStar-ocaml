@@ -9,10 +9,10 @@ init:
 test:
 	dune exec test/run_test.exe -- test '$(F)'
 
-ctest:
+testc:
 	dune exec test/run_test.exe -- test '$(F)' -c
 
-etest:
+teste:
 	dune exec test/run_test.exe -- test '$(F)' -ce
 
 parse:

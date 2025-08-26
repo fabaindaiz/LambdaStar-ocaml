@@ -1,4 +1,4 @@
-# OcamlLambdaStar
+# LambdaStar-ocaml
 
 ### Install
 ```bash

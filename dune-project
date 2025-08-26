@@ -1,4 +1,4 @@
-(lang dune 2.9)
+(lang dune 3.18)
 
 (name lambda_star)
 
@@ -20,11 +20,12 @@
  (synopsis "A short synopsis")
  (description "A longer description")
  (depends
-  (ocaml
-   (>= 4.10))
+  ocaml
   dune
   alcotest
   containers
-  )
+ )
  (tags
-  (topics "to describe" your project)))
+  ("add topics" "to describe" your project)))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
